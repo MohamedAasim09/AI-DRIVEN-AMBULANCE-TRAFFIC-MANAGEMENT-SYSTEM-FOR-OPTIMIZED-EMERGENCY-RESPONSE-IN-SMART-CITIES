@@ -1,0 +1,2 @@
+# AI-DRIVEN-AMBULANCE-TRAFFIC-MANAGEMENT-SYSTEM-FOR-OPTIMIZED-EMERGENCY-RESPONSE-IN-SMART-CITIES
+An AI-driven Ambulance Traffic Management System uses real-time data, sensors, and intelligent algorithms to prioritize ambulance movement in urban traffic. By dynamically controlling traffic signals and optimizing routes, the system reduces delays, ensures faster emergency response, and improves survival rates in smart cities.
