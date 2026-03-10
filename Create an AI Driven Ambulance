@@ -1,0 +1,139 @@
+#include <SPI.h>
+#include <MFRC522.h>
+
+#define SS_PIN 10
+#define RST_PIN 9
+
+MFRC522 rfid(SS_PIN, RST_PIN);
+
+// North Signal (Ambulance Lane)
+int N_red = 2;
+int N_yellow = 3;
+int N_green = 4;
+
+// South Signal
+int S_red = 5;
+int S_yellow = 6;
+int S_green = 7;
+
+// East Signal
+int E_red = 8;
+int E_yellow = A0;
+int E_green = A1;
+
+// West Signal
+int W_red = A2;
+int W_yellow = A3;
+int W_green = A4;
+
+void setup()
+{
+  Serial.begin(9600);
+  SPI.begin();
+  rfid.PCD_Init();
+
+  pinMode(N_red, OUTPUT);
+  pinMode(N_yellow, OUTPUT);
+  pinMode(N_green, OUTPUT);
+
+  pinMode(S_red, OUTPUT);
+  pinMode(S_yellow, OUTPUT);
+  pinMode(S_green, OUTPUT);
+
+  pinMode(E_red, OUTPUT);
+  pinMode(E_yellow, OUTPUT);
+  pinMode(E_green, OUTPUT);
+
+  pinMode(W_red, OUTPUT);
+  pinMode(W_yellow, OUTPUT);
+  pinMode(W_green, OUTPUT);
+
+  allRed();
+}
+
+void loop()
+{
+  normalTraffic();
+
+  if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial())
+  {
+    Serial.println("Ambulance Detected!");
+    ambulancePriority();
+    delay(10000); // Ambulance crossing time
+    rfid.PICC_HaltA();
+  }
+}
+
+void allRed()
+{
+  digitalWrite(N_red, HIGH);
+  digitalWrite(S_red, HIGH);
+  digitalWrite(E_red, HIGH);
+  digitalWrite(W_red, HIGH);
+
+  digitalWrite(N_green, LOW);
+  digitalWrite(S_green, LOW);
+  digitalWrite(E_green, LOW);
+  digitalWrite(W_green, LOW);
+
+  digitalWrite(N_yellow, LOW);
+  digitalWrite(S_yellow, LOW);
+  digitalWrite(E_yellow, LOW);
+  digitalWrite(W_yellow, LOW);
+}
+
+void ambulancePriority()
+{
+  allRed();
+
+  // Ambulance lane GREEN
+  digitalWrite(N_red, LOW);
+  digitalWrite(N_green, HIGH);
+}
+
+void normalTraffic()
+{
+  // North Green
+  digitalWrite(N_green, HIGH);
+  digitalWrite(N_red, LOW);
+  delay(5000);
+
+  digitalWrite(N_green, LOW);
+  digitalWrite(N_yellow, HIGH);
+  delay(2000);
+  digitalWrite(N_yellow, LOW);
+  digitalWrite(N_red, HIGH);
+
+  // South Green
+  digitalWrite(S_green, HIGH);
+  digitalWrite(S_red, LOW);
+  delay(5000);
+
+  digitalWrite(S_green, LOW);
+  digitalWrite(S_yellow, HIGH);
+  delay(2000);
+  digitalWrite(S_yellow, LOW);
+  digitalWrite(S_red, HIGH);
+
+  // East Green
+  digitalWrite(E_green, HIGH);
+  digitalWrite(E_red, LOW);
+  delay(5000);
+
+  digitalWrite(E_green, LOW);
+  digitalWrite(E_yellow, HIGH);
+  delay(2000);
+  digitalWrite(E_yellow, LOW);
+  digitalWrite(E_red, HIGH);
+
+  // West Green
+  digitalWrite(W_green, HIGH);
+  digitalWrite(W_red, LOW);
+  delay(5000);
+
+  digitalWrite(W_green, LOW);
+  digitalWrite(W_yellow, HIGH);
+  delay(2000);
+  digitalWrite(W_yellow, LOW);
+  digitalWrite(W_red, HIGH);
+}
